@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { api } from "./apiService";
 
 
@@ -39,36 +40,27 @@ export const registerUser = (userObj) => {
     });
 };
 
-export const createNewCard = (cardData) => {
-    return api.post("cards",cardData)
-    .then((response) => {
-        return{
-            success: true,
-            message: response.data,
-        }; 
-    })
-    .catch((error) => {
-        console.error(error);
-        return {
-            success: false,
-            message: error.response.data,
-        };
-    });
-};
+export const getProfile = (token) => {
+    // Decode the token to extract the user ID
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const userId = decodedToken._id;
+    console.log(token);
+    console.log("users/"+userId);
 
-
-
-export const editProfile = (userObj) => {
-    return api.post("users",userObj).then((response) => {
-        return{
-            success: true,
-            message: response.data,
-        }; 
-    }).catch((error) => {
-        console.error(error);
-        return {
-            success: false,
-            message: error.response.data,
-        };
-    });
+    // Send the user ID to the API to fetch the profile data
+    return api.get(`users/${userId}`).then((response) => {
+            // Return the profile data received from the API
+            return {
+                success: true,
+                message: response.data,
+            }; 
+        }).catch((error) => {
+            console.error(error);
+            localStorage.setItem("token", null);
+            return {
+                success: false,
+                error: error.response.data,
+                
+            };
+        });
 };

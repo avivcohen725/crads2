@@ -1,9 +1,25 @@
-import { useState } from "react";
-import { editProfile, loginUser, registerUser } from "../services/usersService";
+import { useEffect, useState } from "react";
+import { getProfile, loginUser, registerUser } from "../services/usersService";
 
 const EditProfile = () => {
-    
-    
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    getProfile(token)
+        .then((response) => {
+            if (response.success) {
+                // Update the form data state with the received profile data
+                setFormData(response.data);
+            } else {
+                setError(response.error);
+            }
+        })
+        .catch((error) => {
+            setError("Error fetching profile data");
+            console.error(error);
+        });
+}, []);
+
     const [formData, setFormData] = useState({
             name: {
               first: "",
@@ -18,8 +34,8 @@ const EditProfile = () => {
               alt: ""
             },
             address: {
-              state: "IL",
-              country: "Israel",
+              state: "",
+              country: "",
               city: "",
               street: "",
               houseNumber: "",
@@ -30,6 +46,7 @@ const EditProfile = () => {
     });
 
     const [error, setError] = useState(null);
+
 
 
     const handleInputChange = (e) => {
@@ -77,7 +94,7 @@ const EditProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
             console.log("Form submitted!");    
-        const response = await editProfile(formData);
+        /*const response = await editProfile(formData);
         console.log(response);
 
         if (response.success) {
@@ -85,7 +102,7 @@ const EditProfile = () => {
 
         } else {
             setError(response.message);
-        }
+        }*/
         
     }
         
@@ -283,7 +300,7 @@ const EditProfile = () => {
             </div>
 
             </div>
-            <button type="submit"className="btn btn-primary w-100">Register</button>
+            <button type="submit"className="btn btn-primary w-100">Update</button>
           </form>
           </div>
         </div>

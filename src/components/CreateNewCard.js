@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createNewCard } from "../services/usersService";
+import { createCard } from "../services/cardsService";
 
 const CreateNewCard = () => {
     
@@ -59,7 +59,7 @@ const CreateNewCard = () => {
                         e.preventDefault();
                         console.log("Form submitted!");
 
-                        const response = await createNewCard(formData);
+                        const response = await createCard(formData);
                         console.log(response);
                     }
         
